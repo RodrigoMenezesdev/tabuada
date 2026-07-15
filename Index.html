@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Tabuada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .game-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            display: none;
+        }
+        .pergunta {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .mensagem {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .acerto { color: #28a745; }
+        .erro { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎯 Jogo da Tabuada</h2>
+    
+    <label for="tabuadaSeletor">Escolha a tabuada que quer jogar:</label>
+    <select id="tabuadaSeletor">
+        <option value="2">Tabuada do 2</option>
+        <option value="3">Tabuada do 3</option>
+        <option value="4">Tabuada do 4</option>
+        <option value="5">Tabuada do 5</option>
+        <option value="6">Tabuada do 6</option>
+        <option value="7">Tabuada do 7</option>
+        <option value="8">Tabuada do 8</option>
+        <option value="9">Tabuada do 9</option>
+        <option value="10">Tabuada do 10</option>
+    </select>
+    
+    <button onclick="iniciarJogo()">Jogar!</button>
+
+    <div id="areaJogo" class="game-area">
+        <div class="pergunta" id="textoPergunta">X X X = ?</div>
+        
+        <input type="number" id="respostaUsuario" placeholder="Sua resposta" onkeyup="verificarTecla(event)">
+        <button onclick="verificarResposta()" style="background-color: #007bff;">Enviar Resposta</button>
+        
+        <div id="mensagemFeedback" class="mensagem"></div>
+    </div>
+</div>
+
+<script>
+    // Variáveis globais para controlar o estado do jogo
+    let tabuadaEscolhida = 0;
+    let numeroAleatorio = 0;
+    let respostaCorreta = 0;
+
+    function iniciarJogo() {
+        // Pega a tabuada selecionada no <select>
+        tabuadaEscolhida = parseInt(document.getElementById('tabuadaSeletor').value);
+        
+        // Mostra a área do jogo
+        document.getElementById('areaJogo').style.display = 'block';
+        
+        // Limpa mensagens anteriores e o input
+        document.getElementById('mensagemFeedback').innerText = '';
+        document.getElementById('respostaUsuario').value = '';
+        
+        // Gera a próxima pergunta
+        proximaPergunta();
+    }
+
+    function proximaPergunta() {
+        // Gera um número aleatório entre 1 e 10
+        numeroAleatorio = Math.floor(Math.random() * 10) + 1;
+        
+        // Calcula a resposta correta de forma dinâmica
+        respostaCorreta = tabuadaEscolhida * numeroAleatorio;
+        
+        // Atualiza o texto na tela
+        document.getElementById('textoPergunta').innerText = `${tabuadaEscolhida} x ${numeroAleatorio} = ?`;
+        
+        // Limpa o campo de resposta e foca nele
+        const inputResposta = document.getElementById('respostaUsuario');
+        inputResposta.value = '';
+        inputResposta.focus();
+    }
+
+    function verificarResposta() {
+        const respostaUsuario = parseInt(document.getElementById('respostaUsuario').value);
+        const feedback = document.getElementById('mensagemFeedback');
+
+        if (isNaN(respostaUsuario)) {
+            feedback.className = "mensagem erro";
+            feedback.innerText = "Por favor, digite um número!";
+            return;
+        }
+
+        if (respostaUsuario === respostaCorreta) {
+            feedback.className = "mensagem acerto";
+            feedback.innerText = "🎉 Correto! Muito bem!";
+            
+            // Espera 1.5 segundos e vai para a próxima pergunta automaticamente
+            setTimeout(proximaPergunta, 1500);
+        } else {
+            feedback.className = "mensagem erro";
+            feedback.innerText = `❌ Errado! Tente novamente. (${tabuadaEscolhida} x ${numeroAleatorio} não é ${respostaUsuario})`;
+        }
+    }
+
+    // Função extra para permitir enviar a resposta apertando "Enter"
+    function verificarTecla(event) {
+        if (event.key === 'Enter') {
+            verificarResposta();
+        }
+    }
+</script>
+
+</body>
+</html>

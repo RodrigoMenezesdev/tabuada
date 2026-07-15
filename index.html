@@ -32,7 +32,7 @@
 </div>
 
 <div class="container" id="areaJogo">
-    <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 10</div>
+    <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 15</div>
     <div class="pergunta" id="textoPergunta"></div>
     <input type="number" id="respostaUsuario" placeholder="Resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
     <button onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
@@ -46,7 +46,7 @@
 
 <script>
     let tabuada = 0;
-    let numeros = []; // O "baralho" de números
+    let numeros = []; 
     let indiceAtual = 0;
     let acertos = 0;
 
@@ -55,9 +55,9 @@
         acertos = 0;
         indiceAtual = 0;
         
-        // Cria um array de 1 a 10 e embaralha (Fisher-Yates)
-        numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        numeros.sort(() => Math.random() - 0.5); 
+        // Agora o array contém números de 1 a 15
+        numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+        numeros.sort(() => Math.random() - 0.5); // Embaralha os 15 números
 
         document.getElementById('menuInicial').style.display = 'none';
         document.getElementById('areaJogo').style.display = 'block';
@@ -66,8 +66,9 @@
     }
 
     function proximaPergunta() {
-        if (indiceAtual < 10) {
-            document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 10`;
+        // Verifica se ainda não chegou no limite de 15
+        if (indiceAtual < 15) {
+            document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
             document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
             document.getElementById('respostaUsuario').value = '';
             document.getElementById('respostaUsuario').focus();
@@ -91,7 +92,8 @@
     function finalizarJogo() {
         document.getElementById('areaJogo').style.display = 'none';
         document.getElementById('telaFinal').style.display = 'block';
-        document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 10 perguntas!`;
+        // Mostra a pontuação total de 15
+        document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 15 perguntas!`;
     }
 </script>
 

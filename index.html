@@ -4,47 +4,84 @@
     <meta charset="UTF-8">
     <title>Jogo da Tabuada</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; margin-bottom: 20px; }
         input, select, button { padding: 10px; margin: 10px 0; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
         button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
         #areaJogo, #telaFinal { display: none; margin-top: 20px; }
         .pergunta { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+        .resultado-tabuada { margin-top: 15px; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; line-height: 1.6; font-size: 18px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="menuInicial">
-    <h2>🎯 Jogo da Tabuada</h2>
-    <label>Escolha a tabuada:</label>
-    <select id="tabuadaSeletor">
-        <option value="2">Tabuada do 2</option>
-        <option value="3">Tabuada do 3</option>
-        <option value="4">Tabuada do 4</option>
-        <option value="5">Tabuada do 5</option>
-        <option value="6">Tabuada do 6</option>
-        <option value="7">Tabuada do 7</option>
-        <option value="8">Tabuada do 8</option>
-        <option value="9">Tabuada do 9</option>
-        <option value="10">Tabuada do 10</option>
+<!-- CAIXA 1: MENU E JOGO DA TABUADA -->
+<div class="container">
+    <div id="menuInicial">
+        <h2>🎯 Jogo da Tabuada</h2>
+        <label>Escolha a tabuada para jogar:</label>
+        <select id="tabuadaSeletor">
+            <!-- Opções atualizadas de 2 até 15 para o jogo também -->
+            <option value="2">Tabuada do 2</option>
+            <option value="3">Tabuada do 3</option>
+            <option value="4">Tabuada do 4</option>
+            <option value="5">Tabuada do 5</option>
+            <option value="6">Tabuada do 6</option>
+            <option value="7">Tabuada do 7</option>
+            <option value="8">Tabuada do 8</option>
+            <option value="9">Tabuada do 9</option>
+            <option value="10">Tabuada do 10</option>
+            <option value="11">Tabuada do 11</option>
+            <option value="12">Tabuada do 12</option>
+            <option value="13">Tabuada do 13</option>
+            <option value="14">Tabuada do 14</option>
+            <option value="15">Tabuada do 15</option>
+        </select>
+        <button onclick="iniciarJogo()">Começar Desafio de 15 Perguntas!</button>
+    </div>
+
+    <div id="areaJogo">
+        <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 15</div>
+        <div class="pergunta" id="textoPergunta"></div>
+        <input type="number" id="respostaUsuario" placeholder="Resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
+        <button onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
+    </div>
+
+    <div id="telaFinal">
+        <h2>Fim do Jogo! 🎉</h2>
+        <p id="resultadoFinal" style="font-size: 20px;"></p>
+        <button onclick="location.reload()" style="background-color: #6c757d;">Jogar Novamente</button>
+    </div>
+</div>
+
+<!-- CAIXA 2: NOVA SEÇÃO - TABUADA COMPLETA PARA VISUALIZAR -->
+<div class="container">
+    <h2>📚 Tabuada Completa</h2>
+    <label>Escolha qual tabuada quer visualizar:</label>
+    <select id="visualizarSeletor" onchange="mostrarTabuadaCompleta()">
+        <option value="">-- Selecione uma opção --</option>
+        <option value="2">Ver Tabuada do 2</option>
+        <option value="3">Ver Tabuada do 3</option>
+        <option value="4">Ver Tabuada do 4</option>
+        <option value="5">Ver Tabuada do 5</option>
+        <option value="6">Ver Tabuada do 6</option>
+        <option value="7">Ver Tabuada do 7</option>
+        <option value="8">Ver Tabuada do 8</option>
+        <option value="9">Ver Tabuada do 9</option>
+        <option value="10">Ver Tabuada do 10</option>
+        <option value="11">Ver Tabuada do 11</option>
+        <option value="12">Ver Tabuada do 12</option>
+        <option value="13">Ver Tabuada do 13</option>
+        <option value="14">Ver Tabuada do 14</option>
+        <option value="15">Ver Tabuada do 15</option>
     </select>
-    <button onclick="iniciarJogo()">Começar Desafio!</button>
-</div>
 
-<div class="container" id="areaJogo">
-    <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 15</div>
-    <div class="pergunta" id="textoPergunta"></div>
-    <input type="number" id="respostaUsuario" placeholder="Resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
-    <button onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
-</div>
-
-<div class="container" id="telaFinal">
-    <h2>Fim do Jogo! 🎉</h2>
-    <p id="resultadoFinal" style="font-size: 20px;"></p>
-    <button onclick="location.reload()" style="background-color: #6c757d;">Jogar Novamente</button>
+    <!-- Onde a tabuada gerada vai aparecer -->
+    <div id="containerTabuadaCompleta" class="resultado-tabuada" style="display: none;"></div>
 </div>
 
 <script>
+    // --- LÓGICA DO JOGO ---
     let tabuada = 0;
     let numeros = []; 
     let indiceAtual = 0;
@@ -55,9 +92,8 @@
         acertos = 0;
         indiceAtual = 0;
         
-        // Agora o array contém números de 1 a 15
         numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        numeros.sort(() => Math.random() - 0.5); // Embaralha os 15 números
+        numeros.sort(() => Math.random() - 0.5); 
 
         document.getElementById('menuInicial').style.display = 'none';
         document.getElementById('areaJogo').style.display = 'block';
@@ -66,7 +102,6 @@
     }
 
     function proximaPergunta() {
-        // Verifica se ainda não chegou no limite de 15
         if (indiceAtual < 15) {
             document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
             document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
@@ -92,8 +127,30 @@
     function finalizarJogo() {
         document.getElementById('areaJogo').style.display = 'none';
         document.getElementById('telaFinal').style.display = 'block';
-        // Mostra a pontuação total de 15
         document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 15 perguntas!`;
+    }
+
+    // --- NOVA LÓGICA: VISUALIZAR TABUADA COMPLETA ---
+    function mostrarTabuadaCompleta() {
+        const numeroEscolhido = document.getElementById('visualizarSeletor').value;
+        const container = document.getElementById('containerTabuadaCompleta');
+
+        // Se o usuário selecionar a opção vazia inicial, esconde a caixa
+        if (numeroEscolhido === "") {
+            container.style.display = "none";
+            return;
+        }
+
+        // Limpa o conteúdo anterior
+        container.innerHTML = "";
+        
+        // Laço para gerar a tabuada de 1 até 10
+        for (let i = 1; i <= 10; i++) {
+            container.innerHTML += `${numeroEscolhido} x ${i} = <strong>${numeroEscolhido * i}</strong><br>`;
+        }
+
+        // Mostra a caixa na tela
+        container.style.display = "block";
     }
 </script>
 

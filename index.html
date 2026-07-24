@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabuada Master - App</title>
-    
-    <!-- Configurações para transformar em App móvel (PWA) -->
+    <title>Tabuada Master</title>
+
+    <!-- Configurações para Web App PWA -->
     <meta name="theme-color" content="#4A90E2">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
         * {
@@ -16,21 +16,81 @@
             margin: 0;
             padding: 0;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f2f5; 
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
             padding-bottom: 30px;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* --- CAPA DO APP (HERO HEADER) --- */
+        /* --- TELA DE ABERTURA (SPLASH SCREEN) --- */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .splash-icon {
+            font-size: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            width: 130px;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .splash-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+
+        .splash-sub {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        /* Animação para a Splash Screen */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.08);
+            }
+        }
+
+        .esconder-splash {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- ESTILO DO APLICATIVO --- */
         .app-header {
             width: 100%;
             background: linear-gradient(135deg, #4A90E2 0%, #50E3C2 100%);
             color: white;
-            padding: 40px 20px 30px 20px;
+            padding: 30px 20px 20px 20px;
             text-align: center;
             border-bottom-left-radius: 25px;
             border-bottom-right-radius: 25px;
@@ -38,40 +98,15 @@
             margin-bottom: 25px;
         }
 
-        .app-icon {
-            font-size: 50px;
-            background: rgba(255, 255, 255, 0.2);
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            border-radius: 20px;
-            margin: 0 auto 15px auto;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .app-header h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .app-header p {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-
-        /* --- ESTRUTURA DAS CAIXAS --- */
-        .container { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-            max-width: 400px; 
-            width: 90%; 
-            text-align: center; 
-            margin-bottom: 20px; 
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         h2 {
@@ -87,203 +122,237 @@
             margin-bottom: 5px;
         }
 
-        input, button { 
-            padding: 12px; 
-            margin: 8px 0; 
-            font-size: 16px; 
-            border-radius: 8px; 
-            border: 1px solid #ddd; 
-            width: 100%; 
+        input,
+        button {
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
         }
 
-        input:focus {
-            border-color: #4A90E2;
-            outline: none;
+        button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        button { 
-            background-color: #4A90E2; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: background 0.2s;
+        #areaJogo,
+        #telaFinal {
+            display: none;
+            margin-top: 10px;
         }
 
-        button:hover { 
-            background-color: #357ABD; 
+        .pergunta {
+            font-size: 26px;
+            font-weight: bold;
+            color: #222;
+            margin: 15px 0;
         }
 
-        #areaJogo, #telaFinal { display: none; margin-top: 10px; }
-        .pergunta { font-size: 26px; font-weight: bold; color: #222; margin: 15px 0; }
-        
-        .resultado-tabuada { 
-            margin-top: 15px; 
-            text-align: left; 
-            background: #f8f9fa; 
-            padding: 15px; 
-            border-radius: 8px; 
-            border-left: 4px solid #4A90E2; 
-            line-height: 1.6; 
-            font-size: 17px; 
-            max-height: 250px; 
-            overflow-y: auto; 
+        .resultado-tabuada {
+            margin-top: 15px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4A90E2;
+            line-height: 1.6;
+            font-size: 17px;
+            max-height: 250px;
+            overflow-y: auto;
         }
 
-        .erro-msg { color: #dc3545; font-size: 14px; margin-top: -2px; }
-        .feedback { font-size: 18px; font-weight: bold; margin-top: 12px; min-height: 27px; }
-        .acerto { color: #28a745; }
-        .erro { color: #dc3545; }
+        .erro-msg {
+            color: #dc3545;
+            font-size: 14px;
+        }
+
+        .feedback {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 12px;
+            min-height: 27px;
+        }
+
+        .acerto {
+            color: #28a745;
+        }
+
+        .erro {
+            color: #dc3545;
+        }
     </style>
 </head>
+
 <body>
 
-<!-- CAPA DO APLICATIVO -->
-<header class="app-header">
-    <div class="app-icon">✖️</div>
-    <h1>Tabuada Master</h1>
-    <p>Aprenda e pratique matemática de forma divertida!</p>
-</header>
-
-<!-- CAIXA 1: DESAFIO DA TABUADA -->
-<div class="container">
-    <div id="menuInicial">
-        <h2>🎯 Jogo da Tabuada</h2>
-        <label for="numJogo">Digite a tabuada (1 a 100):</label>
-        <input type="number" id="numJogo" min="1" max="100" placeholder="Ex: 7">
-        <div id="erroJogo" class="erro-msg"></div>
-        <button onclick="iniciarJogo()">Começar Desafio!</button>
+    <!-- 1. TELA DE ABERTURA (CAPA DO APP) -->
+    <div id="splashScreen">
+        <div class="splash-icon">✖️</div>
+        <div class="splash-title">Tabuada Master</div>
+        <div class="splash-sub">Carregando o jogo...</div>
     </div>
 
-    <div id="areaJogo">
-        <div id="statusJogo" style="font-weight: bold; color: #777;">Pergunta 1 de 15</div>
-        <div class="pergunta" id="textoPergunta"></div>
-        <input type="number" id="respostaUsuario" placeholder="Sua resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
-        <button id="btnEnviar" onclick="verificarResposta()">Enviar Resposta</button>
-        <div id="mensagemFeedback" class="feedback"></div>
+    <!-- 2. APPS MAIN HEADER -->
+    <header class="app-header">
+        <h1>✖️ Tabuada Master</h1>
+        <p>Aprenda e pratique matemática!</p>
+    </header>
+
+    <!-- 3. CAIXA DO JOGO -->
+    <div class="container">
+        <div id="menuInicial">
+            <h2>🎯 Jogo da Tabuada</h2>
+            <label for="numJogo">Digite a tabuada (1 a 100):</label>
+            <input type="number" id="numJogo" min="1" max="100" placeholder="Ex: 7">
+            <div id="erroJogo" class="erro-msg"></div>
+            <button onclick="iniciarJogo()">Começar Desafio!</button>
+        </div>
+
+        <div id="areaJogo">
+            <div id="statusJogo" style="font-weight: bold; color: #777;">Pergunta 1 de 15</div>
+            <div class="pergunta" id="textoPergunta"></div>
+            <input type="number" id="respostaUsuario" placeholder="Sua resposta"
+                onkeyup="if(event.key==='Enter') verificarResposta()">
+            <button id="btnEnviar" onclick="verificarResposta()">Enviar Resposta</button>
+            <div id="mensagemFeedback" class="feedback"></div>
+        </div>
+
+        <div id="telaFinal">
+            <h2>Fim do Desafio! 🎉</h2>
+            <p id="resultadoFinal" style="font-size: 20px; margin: 15px 0;"></p>
+            <button onclick="location.reload()" style="background-color: #6c757d;">Jogar Novamente</button>
+        </div>
     </div>
 
-    <div id="telaFinal">
-        <h2>Fim do Desafio! 🎉</h2>
-        <p id="resultadoFinal" style="font-size: 20px; margin: 15px 0;"></p>
-        <button onclick="location.reload()" style="background-color: #6c757d;">Jogar Novamente</button>
+    <!-- 4. CAIXA DE CONSULTA -->
+    <div class="container">
+        <h2>📚 Consulta Rápida</h2>
+        <label for="numVisualizar">Escolha a tabuada para ver (1 a 100):</label>
+        <input type="number" id="numVisualizar" min="1" max="100" placeholder="Ex: 8"
+            oninput="mostrarTabuadaCompleta()">
+
+        <div id="containerTabuadaCompleta" class="resultado-tabuada" style="display: none;"></div>
     </div>
-</div>
 
-<!-- CAIXA 2: TABUADA COMPLETA -->
-<div class="container">
-    <h2>📚 Consulta Rápida</h2>
-    <label for="numVisualizar">Escolha a tabuada para estudar (1 a 100):</label>
-    <input type="number" id="numVisualizar" min="1" max="100" placeholder="Ex: 8" oninput="mostrarTabuadaCompleta()">
-    
-    <div id="containerTabuadaCompleta" class="resultado-tabuada" style="display: none;"></div>
-</div>
+    <script>
+        // --- LÓGICA DA TELA DE ABERTURA (SPLASH) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Exibe a tela de abertura por 2.5 segundos (2500ms)
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                splash.classList.add('esconder-splash');
+            }, 2500);
+        });
 
-<script>
-    // --- LÓGICA DO JOGO ---
-    let tabuada = 0;
-    let numeros = []; 
-    let indiceAtual = 0;
-    let acertos = 0;
-    let aguardandoAvanco = false;
+        // --- LÓGICA DO JOGO ---
+        let tabuada = 0;
+        let numeros = [];
+        let indiceAtual = 0;
+        let acertos = 0;
+        let aguardandoAvanco = false;
 
-    function iniciarJogo() {
-        const inputNum = document.getElementById('numJogo').value;
-        const erroDiv = document.getElementById('erroJogo');
-        
-        tabuada = parseInt(inputNum);
+        function iniciarJogo() {
+            const inputNum = document.getElementById('numJogo').value;
+            const erroDiv = document.getElementById('erroJogo');
 
-        if (isNaN(tabuada) || tabuada < 1 || tabuada > 100) {
-            erroDiv.innerText = "Escolha um número entre 1 e 100.";
-            return;
-        }
-        erroDiv.innerText = "";
+            tabuada = parseInt(inputNum);
 
-        acertos = 0;
-        indiceAtual = 0;
-        aguardandoAvanco = false;
-        
-        numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        numeros.sort(() => Math.random() - 0.5); 
+            if (isNaN(tabuada) || tabuada < 1 || tabuada > 100) {
+                erroDiv.innerText = "Escolha um número entre 1 e 100.";
+                return;
+            }
+            erroDiv.innerText = "";
 
-        document.getElementById('menuInicial').style.display = 'none';
-        document.getElementById('areaJogo').style.display = 'block';
-        
-        proximaPergunta();
-    }
-
-    function proximaPergunta() {
-        if (indiceAtual < 15) {
-            document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
-            document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
-            
-            const inputResposta = document.getElementById('respostaUsuario');
-            inputResposta.value = '';
-            inputResposta.disabled = false;
-            document.getElementById('mensagemFeedback').innerText = '';
-            
+            acertos = 0;
+            indiceAtual = 0;
             aguardandoAvanco = false;
-            inputResposta.focus();
-        } else {
-            finalizarJogo();
-        }
-    }
 
-    function verificarResposta() {
-        if (aguardandoAvanco) return;
+            numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+            numeros.sort(() => Math.random() - 0.5);
 
-        const inputResposta = document.getElementById('respostaUsuario');
-        const feedbackDiv = document.getElementById('mensagemFeedback');
-        const resposta = parseInt(inputResposta.value);
-        const correta = tabuada * numeros[indiceAtual];
+            document.getElementById('menuInicial').style.display = 'none';
+            document.getElementById('areaJogo').style.display = 'block';
 
-        if (isNaN(resposta)) {
-            feedbackDiv.className = "feedback erro";
-            feedbackDiv.innerText = "Digite um valor!";
-            return;
+            proximaPergunta();
         }
 
-        aguardandoAvanco = true;
-        inputResposta.disabled = true;
+        function proximaPergunta() {
+            if (indiceAtual < 15) {
+                document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
+                document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
 
-        if (resposta === correta) {
-            acertos++;
-            feedbackDiv.className = "feedback acerto";
-            feedbackDiv.innerText = "🎉 Certo! Muito bem!";
-        } else {
-            feedbackDiv.className = "feedback erro";
-            feedbackDiv.innerText = `❌ Errado! O correto era ${correta}`;
+                const inputResposta = document.getElementById('respostaUsuario');
+                inputResposta.value = '';
+                inputResposta.disabled = false;
+                document.getElementById('mensagemFeedback').innerText = '';
+
+                aguardandoAvanco = false;
+                inputResposta.focus();
+            } else {
+                finalizarJogo();
+            }
         }
 
-        indiceAtual++;
-        setTimeout(proximaPergunta, 1200);
-    }
+        function verificarResposta() {
+            if (aguardandoAvanco) return;
 
-    function finalizarJogo() {
-        document.getElementById('areaJogo').style.display = 'none';
-        document.getElementById('telaFinal').style.display = 'block';
-        document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 15 perguntas!`;
-    }
+            const inputResposta = document.getElementById('respostaUsuario');
+            const feedbackDiv = document.getElementById('mensagemFeedback');
+            const resposta = parseInt(inputResposta.value);
+            const correta = tabuada * numeros[indiceAtual];
 
-    // --- LÓGICA DA TABUADA COMPLETA ---
-    function mostrarTabuadaCompleta() {
-        const numeroEscolhido = parseInt(document.getElementById('numVisualizar').value);
-        const container = document.getElementById('containerTabuadaCompleta');
+            if (isNaN(resposta)) {
+                feedbackDiv.className = "feedback erro";
+                feedbackDiv.innerText = "Digite um valor!";
+                return;
+            }
 
-        if (isNaN(numeroEscolhido) || numeroEscolhido < 1 || numeroEscolhido > 100) {
-            container.style.display = "none";
-            return;
+            aguardandoAvanco = true;
+            inputResposta.disabled = true;
+
+            if (resposta === correta) {
+                acertos++;
+                feedbackDiv.className = "feedback acerto";
+                feedbackDiv.innerText = "🎉 Certo! Muito bem!";
+            } else {
+                feedbackDiv.className = "feedback erro";
+                feedbackDiv.innerText = `❌ Errado! O correto era ${correta}`;
+            }
+
+            indiceAtual++;
+            setTimeout(proximaPergunta, 1200);
         }
 
-        container.innerHTML = `<strong>Tabuada do ${numeroEscolhido}:</strong><br><br>`;
-        
-        for (let i = 1; i <= 10; i++) {
-            container.innerHTML += `${numeroEscolhido} x ${i} = <strong>${numeroEscolhido * i}</strong><br>`;
+        function finalizarJogo() {
+            document.getElementById('areaJogo').style.display = 'none';
+            document.getElementById('telaFinal').style.display = 'block';
+            document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 15 perguntas!`;
         }
 
-        container.style.display = "block";
-    }
-</script>
+        // --- TABUADA COMPLETA ---
+        function mostrarTabuadaCompleta() {
+            const numeroEscolhido = parseInt(document.getElementById('numVisualizar').value);
+            const container = document.getElementById('containerTabuadaCompleta');
+
+            if (isNaN(numeroEscolhido) || numeroEscolhido < 1 || numeroEscolhido > 100) {
+                container.style.display = "none";
+                return;
+            }
+
+            container.innerHTML = `<strong>Tabuada do ${numeroEscolhido}:</strong><br><br>`;
+
+            for (let i = 1; i <= 10; i++) {
+                container.innerHTML += `${numeroEscolhido} x ${i} = <strong>${numeroEscolhido * i}</strong><br>`;
+            }
+
+            container.style.display = "block";
+        }
+    </script>
 
 </body>
 </html>

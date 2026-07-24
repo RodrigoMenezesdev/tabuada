@@ -2,56 +2,45 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Jogo da Tabuada</title>
-</head>
-
-    <title>Jogo da Tabuada</title>
+    <title>Jogo da Tabuada (1 a 100)</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; margin-bottom: 20px; }
-        input, select, button { padding: 10px; margin: 10px 0; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
+        input, button { padding: 10px; margin: 10px 0; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
         button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #218838; }
         #areaJogo, #telaFinal { display: none; margin-top: 20px; }
         .pergunta { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
-        .resultado-tabuada { margin-top: 15px; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; line-height: 1.6; font-size: 18px; }
+        .resultado-tabuada { margin-top: 15px; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; line-height: 1.6; font-size: 18px; max-height: 250px; overflow-y: auto; }
+        .erro-msg { color: #dc3545; font-size: 14px; margin-top: -5px; }
+        
+        /* Estilos para o Feedback de Certo / Errado */
+        .feedback { font-size: 18px; font-weight: bold; margin-top: 15px; min-height: 27px; }
+        .acerto { color: #28a745; }
+        .erro { color: #dc3545; }
     </style>
 </head>
 <body>
 
-<!-- CAIXA 1: MENU E JOGO DA TABUADA -->
+<!-- CAIXA 1: DESAFIO DA TABUADA -->
 <div class="container">
     <div id="menuInicial">
         <h2>🎯 Jogo da Tabuada</h2>
-        <label>Escolha a tabuada para jogar:</label>
-        <select id="tabuadaSeletor">
-            <!-- Opções atualizadas de 2 até 15 para o jogo também -->
-            <option value="2">Tabuada do 2</option>
-            <option value="3">Tabuada do 3</option>
-            <option value="4">Tabuada do 4</option>
-            <option value="5">Tabuada do 5</option>
-            <option value="6">Tabuada do 6</option>
-            <option value="7">Tabuada do 7</option>
-            <option value="8">Tabuada do 8</option>
-            <option value="9">Tabuada do 9</option>
-            <option value="10">Tabuada do 10</option>
-            <option value="11">Tabuada do 11</option>
-            <option value="12">Tabuada do 12</option>
-            <option value="13">Tabuada do 13</option>
-            <option value="14">Tabuada do 14</option>
-            <option value="15">Tabuada do 15</option>
-        </select>
-        <button onclick="iniciarJogo()">Começar Desafio de 15 Perguntas!</button>
+        <label for="numJogo">Digite a tabuada desejada (1 a 100):</label>
+        <input type="number" id="numJogo" min="1" max="100" placeholder="Ex: 27">
+        <div id="erroJogo" class="erro-msg"></div>
+        <button onclick="iniciarJogo()">Start Desafio (15 Perguntas)!</button>
     </div>
 
     <div id="areaJogo">
         <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 15</div>
         <div class="pergunta" id="textoPergunta"></div>
-        <input type="number" id="respostaUsuario" placeholder="Resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
-        <button onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
+        <input type="number" id="respostaUsuario" placeholder="Sua resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
+        <button id="btnEnviar" onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
+        
+        <!-- Local onde a mensagem de Certo ou Errado vai aparecer -->
+        <div id="mensagemFeedback" class="feedback"></div>
     </div>
 
     <div id="telaFinal">
@@ -61,29 +50,12 @@
     </div>
 </div>
 
-<!-- CAIXA 2: NOVA SEÇÃO - TABUADA COMPLETA PARA VISUALIZAR -->
+<!-- CAIXA 2: TABUADA COMPLETA -->
 <div class="container">
     <h2>📚 Tabuada Completa</h2>
-    <label>Escolha qual tabuada quer visualizar:</label>
-    <select id="visualizarSeletor" onchange="mostrarTabuadaCompleta()">
-        <option value="">-- Selecione uma opção --</option>
-        <option value="2">Ver Tabuada do 2</option>
-        <option value="3">Ver Tabuada do 3</option>
-        <option value="4">Ver Tabuada do 4</option>
-        <option value="5">Ver Tabuada do 5</option>
-        <option value="6">Ver Tabuada do 6</option>
-        <option value="7">Ver Tabuada do 7</option>
-        <option value="8">Ver Tabuada do 8</option>
-        <option value="9">Ver Tabuada do 9</option>
-        <option value="10">Ver Tabuada do 10</option>
-        <option value="11">Ver Tabuada do 11</option>
-        <option value="12">Ver Tabuada do 12</option>
-        <option value="13">Ver Tabuada do 13</option>
-        <option value="14">Ver Tabuada do 14</option>
-        <option value="15">Ver Tabuada do 15</option>
-    </select>
-
-    <!-- Onde a tabuada gerada vai aparecer -->
+    <label for="numVisualizar">Digite a tabuada que quer ver (1 a 100):</label>
+    <input type="number" id="numVisualizar" min="1" max="100" placeholder="Ex: 88" oninput="mostrarTabuadaCompleta()">
+    
     <div id="containerTabuadaCompleta" class="resultado-tabuada" style="display: none;"></div>
 </div>
 
@@ -93,11 +65,23 @@
     let numeros = []; 
     let indiceAtual = 0;
     let acertos = 0;
+    let aguardandoAvanco = false; // Evita cliques múltiplos enquanto mostra o resultado
 
     function iniciarJogo() {
-        tabuada = parseInt(document.getElementById('tabuadaSeletor').value);
+        const inputNum = document.getElementById('numJogo').value;
+        const erroDiv = document.getElementById('erroJogo');
+        
+        tabuada = parseInt(inputNum);
+
+        if (isNaN(tabuada) || tabuada < 1 || tabuada > 100) {
+            erroDiv.innerText = "Por favor, escolha um número de 1 a 100.";
+            return;
+        }
+        erroDiv.innerText = "";
+
         acertos = 0;
         indiceAtual = 0;
+        aguardandoAvanco = false;
         
         numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
         numeros.sort(() => Math.random() - 0.5); 
@@ -112,23 +96,50 @@
         if (indiceAtual < 15) {
             document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
             document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
-            document.getElementById('respostaUsuario').value = '';
-            document.getElementById('respostaUsuario').focus();
+            
+            // Limpa o campo e a mensagem
+            const inputResposta = document.getElementById('respostaUsuario');
+            inputResposta.value = '';
+            inputResposta.disabled = false;
+            document.getElementById('mensagemFeedback').innerText = '';
+            
+            aguardandoAvanco = false;
+            inputResposta.focus();
         } else {
             finalizarJogo();
         }
     }
 
     function verificarResposta() {
-        const resposta = parseInt(document.getElementById('respostaUsuario').value);
+        if (aguardandoAvanco) return; // Trava o envio se já estiver exibindo o feedback
+
+        const inputResposta = document.getElementById('respostaUsuario');
+        const feedbackDiv = document.getElementById('mensagemFeedback');
+        const resposta = parseInt(inputResposta.value);
         const correta = tabuada * numeros[indiceAtual];
+
+        if (isNaN(resposta)) {
+            feedbackDiv.className = "feedback erro";
+            feedbackDiv.innerText = "Digite uma resposta!";
+            return;
+        }
+
+        aguardandoAvanco = true;
+        inputResposta.disabled = true; // Desabilita temporariamente para evitar digitação extra
 
         if (resposta === correta) {
             acertos++;
+            feedbackDiv.className = "feedback acerto";
+            feedbackDiv.innerText = "🎉 Certo! Muito bem!";
+        } else {
+            feedbackDiv.className = "feedback erro";
+            feedbackDiv.innerText = `❌ Errado! O correto era ${correta}`;
         }
 
         indiceAtual++;
-        proximaPergunta();
+        
+        // Aguarda 1.2 segundos para o jogador ler a mensagem e carrega a próxima conta
+        setTimeout(proximaPergunta, 1200);
     }
 
     function finalizarJogo() {
@@ -137,26 +148,22 @@
         document.getElementById('resultadoFinal').innerText = `Você acertou ${acertos} de 15 perguntas!`;
     }
 
-    // --- NOVA LÓGICA: VISUALIZAR TABUADA COMPLETA ---
+    // --- LÓGICA DA TABUADA COMPLETA ---
     function mostrarTabuadaCompleta() {
-        const numeroEscolhido = document.getElementById('visualizarSeletor').value;
+        const numeroEscolhido = parseInt(document.getElementById('numVisualizar').value);
         const container = document.getElementById('containerTabuadaCompleta');
 
-        // Se o usuário selecionar a opção vazia inicial, esconde a caixa
-        if (numeroEscolhido === "") {
+        if (isNaN(numeroEscolhido) || numeroEscolhido < 1 || numeroEscolhido > 100) {
             container.style.display = "none";
             return;
         }
 
-        // Limpa o conteúdo anterior
-        container.innerHTML = "";
+        container.innerHTML = `<strong>Tabuada do ${numeroEscolhido}:</strong><br><br>`;
         
-        // Laço para gerar a tabuada de 1 até 10
         for (let i = 1; i <= 10; i++) {
             container.innerHTML += `${numeroEscolhido} x ${i} = <strong>${numeroEscolhido * i}</strong><br>`;
         }
 
-        // Mostra a caixa na tela
         container.style.display = "block";
     }
 </script>

@@ -3,58 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Tabuada (1 a 100)</title>
+    <title>Tabuada Master - App</title>
+    
+    <!-- Configurações para transformar em App móvel (PWA) -->
+    <meta name="theme-color" content="#4A90E2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; margin-bottom: 20px; }
-        input, button { padding: 10px; margin: 10px 0; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
-        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #218838; }
-        #areaJogo, #telaFinal { display: none; margin-top: 20px; }
-        .pergunta { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
-        .resultado-tabuada { margin-top: 15px; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; line-height: 1.6; font-size: 18px; max-height: 250px; overflow-y: auto; }
-        .erro-msg { color: #dc3545; font-size: 14px; margin-top: -5px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            padding-bottom: 30px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+
+        /* --- CAPA DO APP (HERO HEADER) --- */
+        .app-header {
+            width: 100%;
+            background: linear-gradient(135deg, #4A90E2 0%, #50E3C2 100%);
+            color: white;
+            padding: 40px 20px 30px 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            margin-bottom: 25px;
+        }
+
+        .app-icon {
+            font-size: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 20px;
+            margin: 0 auto 15px auto;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .app-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* --- ESTRUTURA DAS CAIXAS --- */
+        .container { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            max-width: 400px; 
+            width: 90%; 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+
+        h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, button { 
+            padding: 12px; 
+            margin: 8px 0; 
+            font-size: 16px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd; 
+            width: 100%; 
+        }
+
+        input:focus {
+            border-color: #4A90E2;
+            outline: none;
+        }
+
+        button { 
+            background-color: #4A90E2; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background-color: #357ABD; 
+        }
+
+        #areaJogo, #telaFinal { display: none; margin-top: 10px; }
+        .pergunta { font-size: 26px; font-weight: bold; color: #222; margin: 15px 0; }
         
-        /* Estilos para o Feedback de Certo / Errado */
-        .feedback { font-size: 18px; font-weight: bold; margin-top: 15px; min-height: 27px; }
+        .resultado-tabuada { 
+            margin-top: 15px; 
+            text-align: left; 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border-left: 4px solid #4A90E2; 
+            line-height: 1.6; 
+            font-size: 17px; 
+            max-height: 250px; 
+            overflow-y: auto; 
+        }
+
+        .erro-msg { color: #dc3545; font-size: 14px; margin-top: -2px; }
+        .feedback { font-size: 18px; font-weight: bold; margin-top: 12px; min-height: 27px; }
         .acerto { color: #28a745; }
         .erro { color: #dc3545; }
     </style>
 </head>
 <body>
 
+<!-- CAPA DO APLICATIVO -->
+<header class="app-header">
+    <div class="app-icon">✖️</div>
+    <h1>Tabuada Master</h1>
+    <p>Aprenda e pratique matemática de forma divertida!</p>
+</header>
+
 <!-- CAIXA 1: DESAFIO DA TABUADA -->
 <div class="container">
     <div id="menuInicial">
         <h2>🎯 Jogo da Tabuada</h2>
-        <label for="numJogo">Digite a tabuada desejada (1 a 100):</label>
-        <input type="number" id="numJogo" min="1" max="100" placeholder="Ex: 27">
+        <label for="numJogo">Digite a tabuada (1 a 100):</label>
+        <input type="number" id="numJogo" min="1" max="100" placeholder="Ex: 7">
         <div id="erroJogo" class="erro-msg"></div>
-        <button onclick="iniciarJogo()">Start Desafio (15 Perguntas)!</button>
+        <button onclick="iniciarJogo()">Começar Desafio!</button>
     </div>
 
     <div id="areaJogo">
-        <div id="statusJogo" style="font-weight: bold; color: #555;">Pergunta 1 de 15</div>
+        <div id="statusJogo" style="font-weight: bold; color: #777;">Pergunta 1 de 15</div>
         <div class="pergunta" id="textoPergunta"></div>
         <input type="number" id="respostaUsuario" placeholder="Sua resposta" onkeyup="if(event.key==='Enter') verificarResposta()">
-        <button id="btnEnviar" onclick="verificarResposta()" style="background-color: #007bff;">Enviar</button>
-        
-        <!-- Local onde a mensagem de Certo ou Errado vai aparecer -->
+        <button id="btnEnviar" onclick="verificarResposta()">Enviar Resposta</button>
         <div id="mensagemFeedback" class="feedback"></div>
     </div>
 
     <div id="telaFinal">
-        <h2>Fim do Jogo! 🎉</h2>
-        <p id="resultadoFinal" style="font-size: 20px;"></p>
+        <h2>Fim do Desafio! 🎉</h2>
+        <p id="resultadoFinal" style="font-size: 20px; margin: 15px 0;"></p>
         <button onclick="location.reload()" style="background-color: #6c757d;">Jogar Novamente</button>
     </div>
 </div>
 
 <!-- CAIXA 2: TABUADA COMPLETA -->
 <div class="container">
-    <h2>📚 Tabuada Completa</h2>
-    <label for="numVisualizar">Digite a tabuada que quer ver (1 a 100):</label>
-    <input type="number" id="numVisualizar" min="1" max="100" placeholder="Ex: 88" oninput="mostrarTabuadaCompleta()">
+    <h2>📚 Consulta Rápida</h2>
+    <label for="numVisualizar">Escolha a tabuada para estudar (1 a 100):</label>
+    <input type="number" id="numVisualizar" min="1" max="100" placeholder="Ex: 8" oninput="mostrarTabuadaCompleta()">
     
     <div id="containerTabuadaCompleta" class="resultado-tabuada" style="display: none;"></div>
 </div>
@@ -65,7 +185,7 @@
     let numeros = []; 
     let indiceAtual = 0;
     let acertos = 0;
-    let aguardandoAvanco = false; // Evita cliques múltiplos enquanto mostra o resultado
+    let aguardandoAvanco = false;
 
     function iniciarJogo() {
         const inputNum = document.getElementById('numJogo').value;
@@ -74,7 +194,7 @@
         tabuada = parseInt(inputNum);
 
         if (isNaN(tabuada) || tabuada < 1 || tabuada > 100) {
-            erroDiv.innerText = "Por favor, escolha um número de 1 a 100.";
+            erroDiv.innerText = "Escolha um número entre 1 e 100.";
             return;
         }
         erroDiv.innerText = "";
@@ -97,7 +217,6 @@
             document.getElementById('statusJogo').innerText = `Pergunta ${indiceAtual + 1} de 15`;
             document.getElementById('textoPergunta').innerText = `${tabuada} x ${numeros[indiceAtual]} = ?`;
             
-            // Limpa o campo e a mensagem
             const inputResposta = document.getElementById('respostaUsuario');
             inputResposta.value = '';
             inputResposta.disabled = false;
@@ -111,7 +230,7 @@
     }
 
     function verificarResposta() {
-        if (aguardandoAvanco) return; // Trava o envio se já estiver exibindo o feedback
+        if (aguardandoAvanco) return;
 
         const inputResposta = document.getElementById('respostaUsuario');
         const feedbackDiv = document.getElementById('mensagemFeedback');
@@ -120,12 +239,12 @@
 
         if (isNaN(resposta)) {
             feedbackDiv.className = "feedback erro";
-            feedbackDiv.innerText = "Digite uma resposta!";
+            feedbackDiv.innerText = "Digite um valor!";
             return;
         }
 
         aguardandoAvanco = true;
-        inputResposta.disabled = true; // Desabilita temporariamente para evitar digitação extra
+        inputResposta.disabled = true;
 
         if (resposta === correta) {
             acertos++;
@@ -137,8 +256,6 @@
         }
 
         indiceAtual++;
-        
-        // Aguarda 1.2 segundos para o jogador ler a mensagem e carrega a próxima conta
         setTimeout(proximaPergunta, 1200);
     }
 
